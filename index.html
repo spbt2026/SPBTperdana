@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Buku Teks Baharu - Kurikulum 2027</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-[#f8fafc] min-h-screen py-8 px-4 text-slate-900">
+
+    <div class="max-w-2xl mx-auto">
+        <!-- Header Utama -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-[11px] font-extrabold px-4 py-1.5 rounded-full mb-4 tracking-wider uppercase border border-blue-100">
+                <i data-lucide="book-check" size="14"></i>
+                Skim Pinjaman Buku Teks
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">Pesanan Buku Teks Terbitan Baharu</h1>
+            <p class="text-slate-500 font-medium mt-2">Kurikulum Persekolahan 2027</p>
+        </div>
+
+        <!-- Container Borang -->
+        <div id="mainCard" class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden transition-all duration-500">
+            
+            <!-- Indikator Progress -->
+            <div id="progressHeader" class="hidden h-1.5 bg-slate-100 flex">
+                <div id="progressBar" class="h-full bg-blue-600 transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <!-- STEP 0: EMAIL -->
+            <div id="step0" class="step-content active p-10 text-center">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="mail" size="32"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Mula Atau Semak Pesanan</h2>
+                <p class="text-slate-500 text-sm mb-8">Sila masukkan alamat e-mel rasmi untuk mula atau menyemak pesanan.</p>
+                <input type="email" id="emailInput" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl mb-4 text-center font-semibold focus:ring-2 focus:ring-blue-500 outline-none" placeholder="cth: m-123@moe-dl.edu.my">
+                <button onclick="checkEmail()" id="btnCheck" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2">
+                    <span id="btnCheckText">Seterusnya</span> <i data-lucide="arrow-right" size="18"></i>
+                </button>
+            </div>
+
+            <!-- LANGKAH 1: MAKLUMAT ASAS -->
+            <div id="step1" class="step-content p-8 lg:p-10 space-y-8">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shrink-0">
+                        <i data-lucide="school" size="24"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-800">Maklumat Asas</h2>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-widest">Langkah 1 daripada 3</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">Negeri</label>
+                        <select id="negeri" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none"></select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">PPD</label>
+                        <input id="ppd" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Cth: PPD Kinta Utara">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">Kod Sekolah</label>
+                        <input id="kodSekolah" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 uppercase" placeholder="Cth: BBA1234">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">Jenis Sekolah</label>
+                        <select id="jenisSekolah" onchange="updateCluster()" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none"></select>
+                    </div>
+                    <div class="md:col-span-2 space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">Nama Sekolah</label>
+                        <input id="namaSekolah" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 font-bold uppercase" placeholder="Cth: SK CONVENT (M)">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">Nama Guru Penyelaras</label>
+                        <input id="namaGuru" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Nama penuh anda">
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">Jawatan</label>
+                        <select id="jawatanGuru" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20">
+                            <option value="">Pilih Jawatan</option>
+                            <option value="Guru Besar">Guru Besar</option>
+                            <option value="Penolong Kanan">Penolong Kanan</option>
+                            <option value="Guru Penyelaras SPBT">Guru Penyelaras SPBT</option>
+                            <option value="Guru Matapelajaran">Guru Matapelajaran</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 space-y-1.5">
+                        <label class="text-[11px] font-extrabold text-slate-500 uppercase ml-1">No. Telefon Bimbit</label>
+                        <input id="noTelefon" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Cth: 0123456789">
+                    </div>
+
+                    <!-- SEKSYEN ENROLMEN MURID TAHUN 1 -->
+                    <div class="md:col-span-2 pt-4 border-t border-slate-100 space-y-4">
+                        <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="users" class="text-blue-500" size="18"></i>
+                            Unjuran Enrolmen Murid Tahun 1 (2027)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-extrabold text-slate-500 uppercase ml-1">Murid Islam</label>
+                                <input type="number" id="muridIslam" min="0" oninput="calculateTotalEnrolmen()" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="0">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-extrabold text-slate-500 uppercase ml-1">Murid Bukan Islam</label>
+                                <input type="number" id="muridBukanIslam" min="0" oninput="calculateTotalEnrolmen()" class="form-input w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="0">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-extrabold text-slate-500 uppercase ml-1">Jumlah Enrolmen</label>
+                                <input type="number" id="jumlahEnrolmen" class="form-input w-full p-4 bg-slate-100 border border-slate-200 rounded-2xl outline-none font-bold text-slate-700" placeholder="0" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: PESANAN -->
+            <div id="step2" class="step-content p-8 space-y-4">
+                <h2 class="text-xl font-bold flex items-center gap-2"><i data-lucide="list-checks" class="text-blue-600"></i> Senarai Pesanan</h2>
+                <div id="bookList" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></div>
+            </div>
+
+            <!-- STEP 3: PENGESAHAN -->
+            <div id="step3" class="step-content p-8 space-y-6">
+                <h2 class="text-xl font-bold flex items-center gap-2"><i data-lucide="user-check" class="text-blue-600"></i> Pengesahan</h2>
+                <div class="space-y-4">
+                    <input id="namaPengesah" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nama Guru Besar / PK HEM">
+                    <input id="jawatanPengesah" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="Jawatan">
+                    <label class="flex items-start gap-3 p-4 bg-blue-50 rounded-xl cursor-pointer">
+                        <input type="checkbox" id="perakuan" class="mt-1 w-5 h-5 text-blue-600">
+                        <span class="text-sm font-semibold text-blue-800">Saya dengan ini mengesahkan bahawa segala maklumat yang diberikan adalah tepat dan mengikut unjuran enrolmen murid yang terkini.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Nav Buttons -->
+            <div id="navButtons" class="hidden p-6 bg-slate-50 border-t border-slate-100 flex justify-between">
+                <button onclick="prevStep()" class="text-slate-500 font-bold flex items-center gap-1 hover:text-slate-800 transition-colors">
+                    <i data-lucide="chevron-left" size="18"></i> Kembali
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="nextStep()" id="btnNext" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition-all shadow-lg shadow-blue-200">
+                        Seterusnya
+                    </button>
+                    <button onclick="submitForm()" id="btnSubmit" class="hidden bg-slate-900 hover:bg-black text-white font-bold px-8 py-3 rounded-xl transition-all shadow-lg">
+                        Hantar Rekod
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMsg" class="hidden bg-white p-12 rounded-[2rem] shadow-2xl text-center animate-fadeIn border border-slate-100">
+            <div class="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="check-circle" size="40"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-800 mb-2">Berjaya!</h2>
+            <p class="text-slate-500 mb-8">Data telah disimpan. Sila semak emel anda untuk salinan pesanan.</p>
+            <button onclick="location.reload()" class="bg-slate-900 text-white font-bold px-10 py-3 rounded-xl">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        // GANTIKAN DENGAN URL WEB APP ANDA
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAjUwdS5oxXpbS0nW-QCtHlxJQ3jp1a2AYwY3wYALwGS7ccOT-HWQ2mFiWprApvnbU/exec";
+        
+        let currentStep = 0;
+        let isUpdateMode = false;
+        let userData = {};
+
+        const BUKU_DATA = {
+            "SK": [
+                { kod: "BA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BA)" },
+                { kod: "BT061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BT)" },
+                { kod: "BT481003", tajuk: "ASAS BACAAN AL-QURAN TAHUN 1" },
+                { kod: "BA211030", tajuk: "BAHASA ARAB TAHUN 1 (BA)" },
+                { kod: "BT211030", tajuk: "BAHASA ARAB TAHUN 1 (BT)" },
+                { kod: "BA031002", tajuk: "BAHASA CINA TAHUN 1 SK (BA)" },
+                { kod: "BT031003", tajuk: "BAHASA CINA TAHUN 1 SK (BT)" },
+                { kod: "BA201003", tajuk: "BAHASA IBAN TAHUN 1 (BA)" },
+                { kod: "BT201006", tajuk: "BAHASA IBAN TAHUN 1 (BT)" },
+                { kod: "BA021001", tajuk: "BAHASA INGGERIS TAHUN 1 (BA)" },
+                { kod: "BT021005", tajuk: "BAHASA INGGERIS TAHUN 1 (BT)" },
+                { kod: "BA221002", tajuk: "BAHASA KADAZANDUSUN TAHUN 1 (BA)" },
+                { kod: "BT221004", tajuk: "BAHASA KADAZANDUSUN TAHUN 1 (BT)" },
+                { kod: "BA011123", tajuk: "BAHASA MELAYU TAHUN 1 SK (BA)" },
+                { kod: "BT011123", tajuk: "BAHASA MELAYU TAHUN 1 SK (BT)" },
+                { kod: "BA231002", tajuk: "BAHASA SEMAI TAHUN 1 (BA)" },
+                { kod: "BT231004", tajuk: "BAHASA SEMAI TAHUN 1 (BT)" },
+                { kod: "BA041002", tajuk: "BAHASA TAMIL TAHUN 1 SK (BA)" },
+                { kod: "BT041003", tajuk: "BAHASA TAMIL TAHUN 1 SK (BT)" },
+                { kod: "BA081005", tajuk: "MATEMATIK TAHUN 1 SK (BA)" },
+                { kod: "BT081007", tajuk: "MATEMATIK TAHUN 1 SK (BT)" },
+                { kod: "BA081006", tajuk: "MATHEMATICS YEAR 1 (ACTIVITY BOOK) (DLP)" },
+                { kod: "BT081008", tajuk: "MATHEMATICS YEAR 1 (TEXTBOOK) (DLP)" },
+                { kod: "BA101005", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BA)" },
+                { kod: "BT101006", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BT)" },
+                { kod: "BA121001", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BA)" },
+                { kod: "BT121062", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BT)" },
+                { kod: "BA111001", tajuk: "PENDIDIKAN MORAL TAHUN 1 SK (BA)" },
+                { kod: "BT111021", tajuk: "PENDIDIKAN MORAL TAHUN 1 SK (BT)" }
+            ],
+            "SABK/SRA": [
+                { kod: "BA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BA)" },
+                { kod: "BT061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BT)" },
+                { kod: "BT481003", tajuk: "ASAS BACAAN AL-QURAN TAHUN 1" },
+                { kod: "BA211030", tajuk: "BAHASA ARAB TAHUN 1 (BA)" },
+                { kod: "BT211030", tajuk: "BAHASA ARAB TAHUN 1 (BT)" },
+                { kod: "BA021001", tajuk: "BAHASA INGGERIS TAHUN 1 (BA)" },
+                { kod: "BT021005", tajuk: "BAHASA INGGERIS TAHUN 1 (BT)" },
+                { kod: "BA011123", tajuk: "BAHASA MELAYU TAHUN 1 SK (BA)" },
+                { kod: "BT011123", tajuk: "BAHASA MELAYU TAHUN 1 SK (BT)" },
+                { kod: "BA081005", tajuk: "MATEMATIK TAHUN 1 SK (BA)" },
+                { kod: "BT081007", tajuk: "MATEMATIK TAHUN 1 SK (BT)" },
+                { kod: "BA101005", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BA)" },
+                { kod: "BT101006", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BT)" },
+                { kod: "BA121001", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BA)" },
+                { kod: "BT121062", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BT)" },
+            ],
+            "SJKC": [
+                { kod: "DA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SJKC (BA)" },
+                { kod: "DT061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SJKC (BT)" },
+                { kod: "BT481003", tajuk: "ASAS BACAAN AL-QURAN TAHUN 1" },
+                { kod: "BA211030", tajuk: "BAHASA ARAB TAHUN 1 (BA)" },
+                { kod: "BT211030", tajuk: "BAHASA ARAB TAHUN 1 (BT)" },
+                { kod: "DA031003", tajuk: "BAHASA CINA TAHUN 1 SJKC (BA)" },
+                { kod: "DT031004", tajuk: "BAHASA CINA TAHUN 1 SJKC (BT)" },
+                { kod: "BA021001", tajuk: "BAHASA INGGERIS TAHUN 1 (BA)" },
+                { kod: "BT021005", tajuk: "BAHASA INGGERIS TAHUN 1 (BT)" },
+                { kod: "AA011225", tajuk: "BAHASA MELAYU TAHUN 1 SJK (BA)" },
+                { kod: "AT011226", tajuk: "BAHASA MELAYU TAHUN 1 SJK (BT)" },
+                { kod: "DA081003", tajuk: "MATEMATIK TAHUN 1 SJKC (BA)" },
+                { kod: "DT081005", tajuk: "MATEMATIK TAHUN 1 SJKC (BT)" },
+                { kod: "BA081006", tajuk: "MATHEMATICS YEAR 1 (ACTIVITY BOOK) (DLP)" },
+                { kod: "BT081008", tajuk: "MATHEMATICS YEAR 1 (TEXTBOOK) (DLP)" },
+                { kod: "BA101005", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BA)" },
+                { kod: "BT101006", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BT)" },
+                { kod: "DA121001", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SJKC (BA)" },
+                { kod: "DT121002", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SJKC (BT)" },
+                { kod: "DA111001", tajuk: "PENDIDIKAN MORAL TAHUN 1 SJKC (BA)" },
+                { kod: "DT111002", tajuk: "PENDIDIKAN MORAL TAHUN 1 SJKC (BT)" }
+            ],
+            "SJKT": [
+                { kod: "EA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SJKT (BA)" },
+                { kod: "ET061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SJKT (BT)" },
+                { kod: "BT481003", tajuk: "ASAS BACAAN AL-QURAN TAHUN 1" },
+                { kod: "BA211030", tajuk: "BAHASA ARAB TAHUN 1 (BA)" },
+                { kod: "BT211030", tajuk: "BAHASA ARAB TAHUN 1 (BT)" },
+                { kod: "BA021001", tajuk: "BAHASA INGGERIS TAHUN 1 (BA)" },
+                { kod: "BT021005", tajuk: "BAHASA INGGERIS TAHUN 1 (BT)" },
+                { kod: "EA041003", tajuk: "BAHASA TAMIL TAHUN 1 SJKT (BA)" },
+                { kod: "ET041004", tajuk: "BAHASA TAMIL TAHUN 1 SJKT (BT)" },
+                { kod: "EA081003", tajuk: "MATEMATIK TAHUN 1 SJKT (BA)" },
+                { kod: "ET081005", tajuk: "MATEMATIK TAHUN 1 SJKT (BT)" },
+                { kod: "BA081006", tajuk: "MATHEMATICS YEAR 1 (ACTIVITY BOOK) (DLP)" },
+                { kod: "BT081008", tajuk: "MATHEMATICS YEAR 1 (TEXTBOOK) (DLP)" },
+                { kod: "BA101005", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BA)" },
+                { kod: "BT101006", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BT)" },
+                { kod: "EA121001", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SJKT (BA)" },
+                { kod: "ET121002", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SJKT (BT)" },
+                { kod: "EA111001", tajuk: "PENDIDIKAN MORAL TAHUN 1 SJKT (BA)" },
+                { kod: "ET111002", tajuk: "PENDIDIKAN MORAL TAHUN 1 SJKT (BT)" }
+            ]
+        };
+
+        const NEGERI = ["Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan", "Pahang", "Perak", "Perlis", "Pulau Pinang", "Sabah", "Sarawak", "Selangor", "Terengganu", "WP Kuala Lumpur", "WP Labuan", "WP Putrajaya"];
+        const JENIS = ["SK", "SJKC", "SJKT", "SABK", "SRA"];
+
+        window.onload = () => {
+            lucide.createIcons();
+            document.getElementById('negeri').innerHTML = '<option value="">Pilih Negeri</option>' + NEGERI.map(n => `<option value="${n}">${n}</option>`).join('');
+            document.getElementById('jenisSekolah').innerHTML = '<option value="">Pilih Jenis</option>' + JENIS.map(j => `<option value="${j}">${j}</option>`).join('');
+        };
+
+        async function checkEmail() {
+            const email = document.getElementById('emailInput').value.trim();
+            if(!email || !email.includes('@')) return alert("Emel tidak sah!");
+            
+            const btn = document.getElementById('btnCheck');
+            btn.disabled = true;
+            document.getElementById('btnCheckText').innerText = "Menyemak...";
+
+            try {
+                const res = await fetch(`${SCRIPT_URL}?email=${encodeURIComponent(email)}`);
+                const result = await res.json();
+
+                if(result.status === "found") {
+                    isUpdateMode = true;
+                    userData = result.data;
+                    fillFormData(result.data);
+                    document.getElementById('modeHeader').classList.remove('hidden');
+                } else {
+                    isUpdateMode = false;
+                    userData = {};
+                    document.querySelectorAll('input, select').forEach(i => { if(i.id !== 'emailInput') i.value = ""; });
+                }
+                showStep(1);
+                document.getElementById('navButtons').classList.remove('hidden');
+                document.getElementById('progressHeader').classList.remove('hidden');
+            } catch(e) {
+                alert("Gagal menghubungi pelayan. Teruskan dengan borang baharu.");
+                showStep(1);
+                document.getElementById('navButtons').classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                document.getElementById('btnCheckText').innerText = "Seterusnya";
+            }
+        }
+
+        function fillFormData(data) {
+            document.getElementById('negeri').value = data["Negeri"] || "";
+            document.getElementById('ppd').value = data["PPD"] || "";
+            document.getElementById('kodSekolah').value = data["Kod Sekolah"] || "";
+            document.getElementById('jenisSekolah').value = data["Jenis Sekolah"] || "";
+            document.getElementById('namaSekolah').value = data["Nama Sekolah"] || "";
+            document.getElementById('namaGuru').value = data["Nama Guru"] || "";
+            document.getElementById('jawatanGuru').value = data["Jawatan Guru"] || "";
+            document.getElementById('noTelefon').value = data["No Telefon"] || "";
+            document.getElementById('namaPengesah').value = data["Nama Pengesah"] || "";
+            document.getElementById('jawatanPengesah').value = data["Jawatan Pengesah"] || "";
+            
+            // Muat semula data enrolmen
+            document.getElementById('muridIslam').value = data["Murid Islam"] !== undefined ? data["Murid Islam"] : "";
+            document.getElementById('muridBukanIslam').value = data["Murid Bukan Islam"] !== undefined ? data["Murid Bukan Islam"] : "";
+            calculateTotalEnrolmen();
+
+            updateCluster();
+        }
+
+        function calculateTotalEnrolmen() {
+            const islam = parseInt(document.getElementById('muridIslam').value) || 0;
+            const bukanIslam = parseInt(document.getElementById('muridBukanIslam').value) || 0;
+            document.getElementById('jumlahEnrolmen').value = islam + bukanIslam;
+        }
+
+        function updateCluster() {
+            let jenis = document.getElementById('jenisSekolah').value;
+            let cluster = (jenis === "SJKC" || jenis === "SJKT") ? jenis : "SK";
+            const list = document.getElementById('bookList');
+            list.innerHTML = "";
+            
+            BUKU_DATA[cluster].forEach(b => {
+                const qty = isUpdateMode ? (userData[b.tajuk] || "") : "";
+                list.innerHTML += `
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div class="flex-1">
+                            <div class="text-[10px] font-bold text-blue-500 uppercase">${b.kod}</div>
+                            <div class="text-sm font-bold text-slate-700">${b.tajuk}</div>
+                        </div>
+                        <input type="number" data-tajuk="${b.tajuk}" value="${qty}" 
+                            class="qty-input w-20 p-3 text-center bg-white border border-slate-200 rounded-xl font-bold text-blue-600 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0">
+                    </div>
+                `;
+            });
+        }
+
+        function showStep(s) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step${s}`).classList.add('active');
+            currentStep = s;
+            document.getElementById('progressBar').style.width = `${(s/3)*100}%`;
+            document.getElementById('btnNext').classList.toggle('hidden', s === 3);
+            document.getElementById('btnSubmit').classList.toggle('hidden', s !== 3);
+            window.scrollTo(0,0);
+        }
+
+        function nextStep() {
+            if(currentStep === 1) {
+                if(!document.getElementById('kodSekolah').value) return alert("Sila isi Kod Sekolah!");
+                if(!document.getElementById('negeri').value) return alert("Sila pilih Negeri!");
+                if(!document.getElementById('jenisSekolah').value) return alert("Sila pilih Jenis Sekolah!");
+                
+                // Memastikan maklumat enrolmen diisi sekurang-kurangnya 0
+                const islam = document.getElementById('muridIslam').value;
+                const bukanIslam = document.getElementById('muridBukanIslam').value;
+                if(islam === "" || bukanIslam === "") {
+                    return alert("Sila isikan bilangan enrolmen Murid Islam dan Murid Bukan Islam (masukkan 0 jika tiada).");
+                }
+            }
+            showStep(currentStep + 1);
+        }
+
+        function prevStep() {
+            if(currentStep === 1) {
+                document.getElementById('navButtons').classList.add('hidden');
+                document.getElementById('progressHeader').classList.add('hidden');
+                showStep(0);
+            } else showStep(currentStep - 1);
+        }
+
+        async function submitForm() {
+            if(!document.getElementById('perakuan').checked) return alert("Sila tanda perakuan!");
+            
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerHTML = "Menghantar...";
+
+            const payload = {
+                "Tarikh Kemaskini": new Date().toLocaleString('ms-MY'),
+                "Negeri": document.getElementById('negeri').value,
+                "PPD": document.getElementById('ppd').value,
+                "Kod Sekolah": document.getElementById('kodSekolah').value.toUpperCase(),
+                "Jenis Sekolah": document.getElementById('jenisSekolah').value,
+                "Nama Sekolah": document.getElementById('namaSekolah').value.toUpperCase(),
+                "Nama Guru": document.getElementById('namaGuru').value,
+                "Jawatan Guru": document.getElementById('jawatanGuru').value,
+                "No Telefon": document.getElementById('noTelefon').value,
+                "Emel Guru": document.getElementById('emailInput').value.toLowerCase(),
+                "Murid Islam": parseInt(document.getElementById('muridIslam').value) || 0,
+                "Murid Bukan Islam": parseInt(document.getElementById('muridBukanIslam').value) || 0,
+                "Jumlah Enrolmen": parseInt(document.getElementById('jumlahEnrolmen').value) || 0,
+                "Nama Pengesah": document.getElementById('namaPengesah').value,
+                "Jawatan Pengesah": document.getElementById('jawatanPengesah').value
+            };
+
+            document.querySelectorAll('.qty-input').forEach(input => {
+                const tajuk = input.getAttribute('data-tajuk');
+                const val = parseInt(input.value) || 0;
+                payload[tajuk] = val;
+            });
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(payload)
+                });
+                
+                document.getElementById('mainCard').classList.add('hidden');
+                document.getElementById('successMsg').classList.remove('hidden');
+            } catch(e) {
+                alert("Ralat penghantaran. Sila semak emel anda.");
+                console.error(e);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Hantar Rekod";
+            }
+        }
+    </script>
+</body>
+</html>
