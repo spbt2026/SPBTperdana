@@ -215,7 +215,7 @@
                 { kod: "BA111001", tajuk: "PENDIDIKAN MORAL TAHUN 1 SK (BA)" },
                 { kod: "BT111021", tajuk: "PENDIDIKAN MORAL TAHUN 1 SK (BT)" }
             ],
-            "SABK": [
+            "SABK/SRA": [
                 { kod: "BA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BA)" },
                 { kod: "BT061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BT)" },
                 { kod: "BT481003", tajuk: "ASAS BACAAN AL-QURAN TAHUN 1" },
@@ -230,24 +230,7 @@
                 { kod: "BA101005", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BA)" },
                 { kod: "BT101006", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BT)" },
                 { kod: "BA121001", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BA)" },
-                { kod: "BT121062", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BT)" },
-            ],
-            "SRA": [
-                { kod: "BA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BA)" },
-                { kod: "BT061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SK (BT)" },
-                { kod: "BT481003", tajuk: "ASAS BACAAN AL-QURAN TAHUN 1" },
-                { kod: "BA211030", tajuk: "BAHASA ARAB TAHUN 1 (BA)" },
-                { kod: "BT211030", tajuk: "BAHASA ARAB TAHUN 1 (BT)" },
-                { kod: "BA021001", tajuk: "BAHASA INGGERIS TAHUN 1 (BA)" },
-                { kod: "BT021005", tajuk: "BAHASA INGGERIS TAHUN 1 (BT)" },
-                { kod: "BA011123", tajuk: "BAHASA MELAYU TAHUN 1 SK (BA)" },
-                { kod: "BT011123", tajuk: "BAHASA MELAYU TAHUN 1 SK (BT)" },
-                { kod: "BA081005", tajuk: "MATEMATIK TAHUN 1 SK (BA)" },
-                { kod: "BT081007", tajuk: "MATEMATIK TAHUN 1 SK (BT)" },
-                { kod: "BA101005", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BA)" },
-                { kod: "BT101006", tajuk: "PENDIDIKAN ISLAM TAHUN 1 (BT)" },
-                { kod: "BA121001", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BA)" },
-                { kod: "BT121062", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BT)" },
+                { kod: "BT121062", tajuk: "PENDIDIKAN JASMANI TAHUN 1 SK (BT)" }
             ],
             "SJKC": [
                 { kod: "DA061001", tajuk: "ALAM DAN MANUSIA: PEMBELAJARAN BERSEPADU TAHUN 1 SJKC (BA)" },
@@ -367,7 +350,14 @@
 
         function updateCluster() {
             let jenis = document.getElementById('jenisSekolah').value;
-            let cluster = (jenis === "SJKC" || jenis === "SJKT") ? jenis : "SK";
+            let cluster = "SK";
+            
+            if (jenis === "SJKC" || jenis === "SJKT") {
+                cluster = jenis;
+            } else if (jenis === "SABK" || jenis === "SRA") {
+                cluster = "SABK/SRA";
+            }
+            
             const list = document.getElementById('bookList');
             list.innerHTML = "";
             
